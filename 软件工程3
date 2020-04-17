@@ -1,0 +1,213 @@
+   #include <iostream>
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<ctype.h>
+#define SIZE 5
+#define size 10
+using namespace std;
+struct teacher_type
+{
+	char number[15];
+	char name[20];
+	int count;
+}tea[SIZE];
+struct student_type
+{
+	char number[15];
+	char name[20];
+	char chosen[20];
+}stu[size];
+void luru()
+{
+	int m;
+	FILE *fp1, *fp2;
+	if ((fp1 = fopen("teacher.txt", "r+")) == NULL)
+	{
+		printf(" Cannot find this file!\n");
+		system("pause");
+		exit(0);
+	}
+	for (m = 0; m<SIZE; m++)
+	{
+		fscanf(fp1, "%s%s%d\n", tea[m].number, tea[m].name, &tea[m].count); /**/
+		printf("%s%s%d\n", tea[m].number, tea[m].name, tea[m].count);
+	}
+	if ((fp2 = fopen("student.txt", "r+")) == NULL)
+	{
+		printf(" Cannot find this file!\n");
+		system("pause");
+		exit(0);
+	}
+	for (int i = 0; i<size; i++)
+	{
+		fscanf(fp2, "%s%s%s\n", stu[i].number, stu[i].name, stu[i].chosen);
+	}
+}
+void select()
+{
+	int i, m, p;
+	char a[15], b[15];
+	printf(" 请输入学生编号:\n");
+	scanf("%s", a);
+	printf("请输入老师编号：\n");
+	scanf("%s", b);
+	for (i = 0; i<size; i++)
+	{
+		if (strcmp(stu[i].number, a) == 0)
+		{
+			m = i; break;
+		}
+	}
+	for (i = 0; i<SIZE; i++)
+	{
+		if (strcmp(tea[i].number, b) == 0)
+		{
+			strcpy(stu[m].chosen, tea[i].name); break;
+		}
+	}
+	for (i = 0; i<SIZE; i++)
+	{
+		if (strcmp(tea[i].name, stu[m].chosen) == 0)
+		{
+			tea[i].count++; break;
+		}
+	}
+}
+void change_select()
+{
+	int i, m, j, p; char a[15], b[15], n[15];
+
+	printf("请输入改选学生的编号\n");
+	scanf("%s", a);
+	for (i = 0; i<size; i++)
+	{
+
+		if (strcmp(a, stu[i].number) == 0)
+		{
+			strcpy(b, stu[i].chosen);
+
+			m = i; break;
+		}
+	}
+
+
+	for (j = 0; j<SIZE; j++)
+	{
+
+		if (strcmp(b, tea[j].name) == 0)
+		{
+			tea[j].count--;
+		}
+	}
+
+
+	printf("请输入改选老师编号：\n");
+	scanf("%s", n);
+	for (i = 0; i<SIZE; i++)
+	{
+		if (strcmp(tea[i].number, n) == 0)
+		{
+			strcpy(stu[m].chosen, tea[i].name); break;
+		}
+	}
+	for (i = 0; i<SIZE; i++)
+	{
+
+		if (strcmp(tea[i].name, stu[m].chosen) == 0)
+		{
+			tea[i].count++; break;
+		}
+
+	}
+}
+
+void teacher()
+{
+	int i; char a[15];
+	printf("请输入老师的编号:\n");
+	scanf("%s", a);
+	for (i = 0; i<SIZE; i++)
+	{
+		if (strcmp(a, tea[i].number) == 0)
+		{
+			printf("总共%d 学生选择老师:%s\n", tea[i].count, tea[i].name);
+		}
+	}
+}
+void student()
+{
+	int i;
+	char a[15];
+	FILE*fp;
+	printf("请输入学生的编号:\n");
+	scanf("%s", a);
+	for (i = 0; i<size; i++)
+	{
+		if (strcmp(a, stu[i].number) == 0)
+			printf("学生选择老师的姓名为： %s\n", stu[i].chosen);
+	}
+
+}
+void daying()
+{
+	int i, j; teacher_type temp;
+	for (i = 0; i<SIZE; i++)
+	{
+		for (j = 0; j<SIZE - i - 1; j++)
+		{
+			if (tea[j].count<tea[j + 1].count)
+			{
+				temp = tea[j];
+				tea[j] = tea[j + 1];
+				tea[j + 1] = temp;
+			}
+		}
+
+	}
+	for (i = 0; i<SIZE; i++)
+	{
+		printf("%s %s %d\n", tea[i].name, tea[i].number, tea[i].count);
+	}
+
+}
+
+
+int main()                            /*主函数*/
+{
+	char r;
+	int i;
+	for (i = 0;; i++)
+	{
+		printf("\n\n  *--------------------------菜单--------------------------------*\n");
+		printf("  |                  1.教师信息录入                   |\n");
+		printf("  |                  2.学生选择老师                            |\n");
+		printf("  |                  3.查询某位教师的学生人数                  |\n");
+		printf("  |                  4.查询某位学生所选的教师                  |\n");
+		printf("  |                  5.降序打印教师名单                        |\n");
+		printf("  |                  6,学生改选老师                                  |\n");
+		printf("  |                  7，退出                                   |\n");
+		printf("  *--------------------------------------------------------------*\n");
+		scanf("%s", &r);
+		if (r == '1')
+			luru();
+		else if (r == '2')
+			select();
+		else if (r == '3')
+			teacher();
+		else if (r == '4')
+			student();
+		else if (r == '5')
+			daying();
+		else if (r == '6')
+			change_select();
+		else if (r == '7')
+			exit(0);
+		else
+		{
+			printf("    输入数据无效!\n");
+			continue;
+		}
+	}
+}
